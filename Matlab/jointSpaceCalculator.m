@@ -17,7 +17,7 @@ for unit_x = limits_x
    for unit_y = limits_y
        for unit_z = limits_z
            for unit_height = limits_height
-               [alpha_1, alpha_2, alpha_3] = plotRobot([unit_x; unit_y; unit_z], unit_height);
+               [alpha_1, alpha_2, alpha_3] = simulatorLimbo([unit_x; unit_y; unit_z], unit_height);
                if isreal(alpha_1) && ~isnan(alpha_1) && isreal(alpha_2) && ~isnan(alpha_2) && isreal(alpha_3) && ~isnan(alpha_3)
                    angle_JS = [angle_JS; alpha_1, alpha_2, alpha_3];
                    unit_vector_JS = [unit_vector_JS; unit_x, unit_y, unit_z];

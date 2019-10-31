@@ -8,9 +8,8 @@
 */
 
 #include <Servo.h>
-#define A_MIN 
-#define B_MIN
-#define C_MIN 10
+#define MIN_BOUND 60
+#define MAX_BOUND 120
 
 Servo A;
 Servo B;
@@ -26,13 +25,18 @@ void setup() {
   delay(500);
 }
 
-int c;
-
 void loop() {
-  c = analogRead(A0);
-  c = map(c, 0, 1023, 0, 179);
-  Serial.println(c);
-  A.write(c);
-  delay(15);
+  for (int c = MIN_BOUND; c < MAX_BOUND; c++) {
+    A.write(c);
+    B.write(c);
+    C.write(c);
+    delay(20);
+  }
+  for (int c = MAX_BOUND; c > MIN_BOUND; c--) {
+    A.write(c);
+    B.write(c);
+    C.write(c);
+    delay(20);
+  }
 }
 

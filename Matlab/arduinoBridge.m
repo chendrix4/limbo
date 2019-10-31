@@ -5,8 +5,7 @@ close all
 MIN_BOUND = 65;
 MAX_BOUND = 120;
 
-% Arduino->tools -> port and the baud rate (9600)
-arduino = serialport('COM24', 115200, 'Timeout', 30);
+arduino = serialport(serialportlist, 115200);
 
 sendAngle = @(a, b) writeline(arduino, sprintf('%s%d', b.AffectedObject.String, round(b.AffectedObject.Value)));
 

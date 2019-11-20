@@ -4,9 +4,9 @@ function [alpha1,alpha2,alpha3] = simulatorLimbo(inVec, height, create_plot)
     normVec = inVec/norm(inVec,height);
 
     %CONSTANTS
-    B = 4;
-    L = 3;
-    U = 3.5;
+    B = 8.5; %cm, base distance
+    L = 7; %lower arm length
+    U = 8.5; %upper arm length
     Hc = height;
     plateRadius = 5.5;
 

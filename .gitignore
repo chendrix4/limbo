@@ -1,3 +1,5 @@
 *.dxf
 *.txt
 *.asv
+*.exe
+Misc/*

@@ -15,11 +15,6 @@ f = figure;
 a = uicontrol('Parent', f, 'Style', 'slider');
 b = uicontrol('Parent', f, 'Style', 'slider');
 c = uicontrol('Parent', f, 'Style', 'slider');
-ax = axes('Parent', f, 'xlim', [-1 1], 'ylim', [-1 1], 'zlim', [-1 1]);
-ax.XLimMode = 'manual';
-ax.YLimMode = 'manual';
-ax.ZLimMode = 'manual';
-plot3(ax, [0,0], [0,0], [0,1]);
 
 % A Control
 a.Position = [40,50,200,25];
@@ -67,9 +62,7 @@ c.Value = 0.5*(MIN_BOUND + MAX_BOUND);
 c.Min = MIN_BOUND;
 c.Max = MAX_BOUND;
 c.String = 'C';
-addlistener(c, 'Value', 'PostSet', @(~, x) update(arduino, ...
-                                                  x.AffectedObject, ...
-                                                  [a, b, c, ax]));
+addlistener(c, 'Value', 'PostSet', @(~, x) update(arduino, x.AffectedObject));
 
 cl1 = uicontrol('Parent',f,'Style', 'text', ...
                            'Position', [20,350,25,25],...
@@ -82,38 +75,10 @@ cl3 = uicontrol('Parent',f,'Style', 'text', ...
                            'String', c.String);
 
 
-function [] = update(arduino, control, handles)
-
-  a = handles(1);
-  b = handles(2);
-  c = handles(3);
-  ax = handles(4);
+function [] = update(arduino, control)
 
   % Write data to robot
   writeline(arduino, sprintf('%s%d', control.String, round(control.Value)));
+  fprintf('%s%d\n', control.String, round(control.Value));
   
-  % Update simulation
-  l1 = 70;
-  l2 = 85;
-  L = 85;
-  
-  Lpa = L - l1*cosd(a.Value);
-  Lpb = L - l1*cosd(b.Value);
-  Lpc = L - l1*cosd(c.Value);
-  
-  Ja = [0, Lpa, l1*sind(a.Value)];
-  Jb = [ sqrt(3)/2*Lpb, -1/2*Lpb, l1*sind(b.Value)];
-  Jc = [-sqrt(3)/2*Lpc, -1/2*Lpc, l1*sind(c.Value)];
-  
-  r0 = 100;
-  beta = acos((l1*cosd(control.Value) - r0)/l2)
-  
-  vAB = Jb - Ja;
-  vAC = Jc - Ja;
-  n = cross(vAB, vAC);
-  n = n/norm(n);
-  plot3(ax, [0 n(1)], [0 n(2)], [0 n(3)]);
-  ax.XLim = [-1 1];
-  ax.YLim = [-1 1];
-  ax.ZLim = [-1 1];
 end

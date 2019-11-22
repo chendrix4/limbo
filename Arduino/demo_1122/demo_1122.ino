@@ -1,4 +1,5 @@
 #include <Servo.h>
+#include <Pixy.h>
 #include <Wire.h>
 #include <Adafruit_Sensor.h>  // not used in this demo but required!
 #include <Adafruit_LSM9DS1.h>
@@ -46,8 +47,14 @@ const int8_t offset[4] = {-5, 0, 0};
 // smoothing
 const float s = 0.25;
 
-
+Pixy pixy;
+int ball_x;
+int ball_y;
+int center_x = 166; //check before run
+int center_y = 90; //check before run
 Servo A, B, C;
+
+bool manual_control = true;
 
 void setup() {
 
@@ -92,6 +99,7 @@ void setup() {
   }
   C.write(theta[2] + offset[2]);
 
+  pixy.init()
 }
 
 void loop() {
@@ -99,17 +107,26 @@ void loop() {
   // Reset configuration error flag
   validConfig = true;
 
-  // Read sensor
-  sensors_event_t a, m, g, temp;
-  lsm.getEvent(&a, &m, &g, &temp);
-  ax = s*a.acceleration.x + (1-s)*ax;
-  ay = s*a.acceleration.y + (1-s)*ay;
-  az = s*a.acceleration.z + (1-s)*az;
+  if (manual_control) {
+    // Read sensor
+    sensors_event_t a, m, g, temp;
+    lsm.getEvent(&a, &m, &g, &temp);
+    ax = s*a.acceleration.x + (1-s)*ax;
+    ay = s*a.acceleration.y + (1-s)*ay;
+    az = s*a.acceleration.z + (1-s)*az;
+  
+    // Determine the commanded roll and pitch
+    psi_x = atan2(ay, az);
+    psi_y = atan2(-ax, sqrt(ay*ay + az*az));
+  } else {
+    blocks = pixy.getBlocks();
+    ball_x = pixy.blocks[0].x;
+    ball_y = pixy.blocks[0].y;
 
-  // Determine the commanded roll and pitch
-  psi_x = atan2(ay, az);
-  psi_y = atan2(-ax, sqrt(ay*ay + az*az));
-
+    psi_x = 0.000025*pow(ball_x - center_x, 3);
+    psi_y = 0.000025*pow(ball_y - center_y, 3);
+  }
+  
   //Serial.print(psi_x); Serial.print('\t'); Serial.println(psi_z);
 
   // Calculate yaw, plate (x,y) coord

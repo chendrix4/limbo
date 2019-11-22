@@ -1,14 +1,13 @@
-function [alpha1,alpha2,alpha3] = simulatorLimbo(inVec, height, create_plot)
-
-    %INPUTS 
-    normVec = inVec/norm(inVec,height);
+function [alpha1,alpha2,alpha3] = simulatorLimbo(inVec, Hc, create_plot)
 
     %CONSTANTS
     B = 8.5; %cm, base distance
     L = 7; %lower arm length
     U = 8.5; %upper arm length
-    Hc = height;
-    plateRadius = 5.5;
+    plateRadius = 9.3;
+    
+    %INPUTS 
+    normVec = inVec/norm(inVec,Hc);
 
     %CALCULATIONS
     %arm 1
@@ -95,7 +94,7 @@ function [alpha1,alpha2,alpha3] = simulatorLimbo(inVec, height, create_plot)
 
         end
         axis square;
-        axis([-6 6 -6 6 0 8]);
+        axis([-10 10 -10 10 0 20]);
     end
 end
 
